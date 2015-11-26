@@ -1,0 +1,1023 @@
+<html>
+<head>
+ <script>
+ resizeTo(1000,600);
+ windowx=(screen.availWidth-1000)/2;
+ windowy=(screen.availHeight-600)/2;
+ moveTo(windowx,windowy);
+ isMouseDown=false;
+ ctrl=false;
+ cx=0,cy=0;
+ </script>
+ <script src="base.dll"></script>
+ <script src="nicescroll.dll"></script>
+<hta:application
+contextmenu="no" 
+border="none"
+icon="img/h.ico"
+innerborder="no"
+scroll="no" />
+<style type="text/css">
+*{padding:0px;margin:0px;}
+body{
+cursor:default;
+border:solid 1px #E7E7E7;
+
+}
+.tablelist{
+color:#417D9A;padding-left:10px;width:100%;height:27px;  padding-top:5px;font-size:12px;font-family:微软雅黑;
+ 
+}
+ 
+ button{
+ width:100px;height:25px;border:0px;font-size:12px;color:white;background-color:#417D9A;font-family:微软雅黑;
+ }
+ 
+font{
+font-family:微软雅黑;
+font-size:12px;
+color:#417D9A;
+}
+.leftlist{
+position:absolute;top:130px;left:0px;width:250px;height:450px;overflow-y:scroll;overflow-x:hidden;
+}
+.right_top{
+position:absolute;top:43px;left:270px; font-size:16px;font-family:微软雅黑; color:#417D9A; font-weight:bold; 
+}
+.right_mid{
+position:absolute;top:72px;left:270px;height:30px;  padding-left:25px;font-weight:bold;font-family:微软雅黑; font-size:16px;color:#417D9A; background-image:url(img/cf.png);background-repeat:no-repeat; 
+}
+.right_mid2{
+position:absolute;top:212px;left:270px;height:30px;  padding-left:25px;font-weight:bold;font-family:微软雅黑; font-size:16px;color:#417D9A; background-image:url(img/query.png);background-repeat:no-repeat; 
+}
+.cfinfo{
+position:absolute;top:100px;left:270px;border:solid 1px #417D9A; width:710px;height:105px;  
+
+}
+.content{
+position:absolute;top:280px;left:270px;border:solid 1px #417D9A; width:710px;height:300px;  
+
+}
+.contenti{
+position:absolute;top:302px;left:270px;border:solid 1px #417D9A; width:710px;height:270px; border-top-width:0px;
+
+}
+input{
+font-size:12px;height:22px;font-family:微软雅黑;padding-left:10px;color:#979797;line-height:22px;border:solid 1px #417D9A;background-color:white;
+}
+select{
+background-color:white;
+}
+.selectedList{
+background-color:#417D9A;color:white;
+}
+.clickedList{
+background-color:#BA160C;color:white;
+}
+.thclass td{
+ text-align:center;border:solid 1px;font-family:微软雅黑;font-size:12px;background-color:#417D9A;color:white;
+}
+.tdclass td{
+ border:solid 1px;font-family:微软雅黑;font-size:10px;background-color:#D7D7D7; text-align:center; 
+}
+#countdiv{
+z-index:999;display:none; width:240px;height:50px; background-color:white;position:absolute;top:269px;right:17px;
+}
+#top_banner{
+position:relative;width:100%;height:30px;
+}
+#delrowkeypanel{
+z-index:999; display:none;position:absolute;top:269px;right:110px;width:460px;height:100px;background-color:white;
+}
+#addrowpanel{
+z-index:999; position:absolute;top:269px;right:200px;width:460px;height:190px;background-color:white;display:none;
+}
+#successdelrow{
+width:200px;height:65px;background-color:white;position:absolute;top:269px;right:110px;display:none;
+}
+#successaddrow{
+width:200px;height:65px;background-color:white;position:absolute;top:269px;right:200px;display:none;
+}
+#successcopy{
+width:200px;height:65px;background-color:white;position:absolute;top:269px;right:200px;display:none;
+}
+</style>
+</head>
+<body bgcolor="white">
+ <object id="min" classid="clsid:ADB880A6-D8FF-11CF-9377-00AA003B7A11">  
+    <param name="Command" value="Minimize">  
+</object>  
+<object id="max" classid="clsid:ADB880A6-D8FF-11CF-9377-00AA003B7A11">  
+    <param name="Command" value="Maximize">  
+</object>  
+   
+
+ <div id="top_banner" >
+ </div>
+ 
+  <img  onclick='$("#configPanel").show()' style="position:absolute;top:46px;right:49px;" src="img/setting.png">
+   <font onclick='$("#configPanel").show()' style="position:absolute;top:46px;right:21px;">配置</font>
+  <img id="close" alt="关闭窗口" style="position:absolute;top:7px;right:7px;" src="img/close2.png" >
+ <img  id="maxize" alt="最大化" style="position:absolute;top:7px;right:35px;" src="img/max2.png">
+  <img id="minize" alt="最小化" style="position:absolute;top:7px;right:65px;" src="img/min2.png"  >
+   <img onclick="showcreateTabPanel()" style="position:absolute;top:46px;left:10px;" src="img/addTable.png"  >
+    <font onclick="showcreateTabPanel()" style="position:absolute;top:46px;left:29px;">创建表</font>
+   <img onclick="showdeleteTable()" style="position:absolute;top:46px;left:91px;" src="img/delTable.png"  >
+    <font onclick="showdeleteTable()" style="position:absolute;top:46px;left:108px;">删除表</font>
+   <img onclick="showTruncTable()" style="position:absolute;top:46px;left:171px;" src="img/truncTable.png"  >
+    <font onclick="showTruncTable()" style="position:absolute;top:46px;left:188px;">清空表</font>
+ <input id="tablename" type="text" value="搜索表..." onfocus="this.value=''" onblur="this.value='搜索表...'" style="position:absolute;top:72px;left:10px;width:230px;">
+   <font style="position:absolute;top:105px;left:10px;">共 <b id="countTable">0</b> 张表</font>
+  <div class="leftlist">
+  </div>
+  <div class="right_top">
+  </div>
+ 
+  <div class="right_mid">
+ 列簇  
+  </div>
+   <div class="right_mid2">
+ 查询
+  </div>
+   <input id="rowkey" type="text" value="根据RowKey查询（支持正则）" onfocus="this.value=''"  style="position:absolute;top:243px;left:270px;width:350px;">
+   
+   <img onclick="showaddrowpanel()" style="position:absolute;top:246px;right:253px;" src="img/addTable.png"> 
+    <font onclick="showaddrowpanel()" style="position:absolute;top:245px;right:180px;width:70px;">新增记录</font>
+    
+    <img onclick="showdelrowkeypanel()" style="position:absolute;top:246px;right:173px;" src="img/delTable.png"> 
+    <font onclick="showdelrowkeypanel()" style="position:absolute;top:245px;right:100px;width:70px;">删除记录</font>
+    
+    
+    <img onclick="countRows()" style="position:absolute;top:246px;right:93px;" src="img/count.png"> 
+      <font onclick="countRows()" style="position:absolute;top:245px;right:20px;width:70px;">统计表行数</font>
+     <font onclick="showconditionwarp()" style="position:absolute;top:245px;left:640px">过滤器</font>
+    
+    <div class="content" style="height:23px;border-bottom-width:0px;">
+<table cellspacing=0 cellpadding=0 style="border-collapse:collapse;width:100%; ">
+<tr class="thclass">
+<td width="200">ROWKEY</td> <td width="100">FAMILY</td><td width="100">COLUMN</td><td width="100">TIMESTAMP</td><td>VALUE</td>
+ 
+</tr>
+</table>
+ 
+  </div>
+     <div class="contenti" >
+<table cellspacing=0 cellpadding=0 style="border-collapse:collapse;width:100%; ">
+ 
+</table>
+ 
+  </div>
+  
+   <div class="cfinfo">
+<table cellspacing=0 cellpadding=0 style="border-collapse:collapse;width:100%; ">
+<tr class="thclass">
+<td >NAME</td> <td>REPLICATION_SCOPE</td>
+<td>VERSIONS</td> <td>MIN_VERSIONS</td> <td>BLOCKSIZE</td><td>IN_MEMORY</td> 
+</tr>
+</table>
+
+  </div>
+  
+  <div id="configPanel" style="z-index:999;text-align:center;display:none;position:absolute;top:66px;right:18px;width:560px;height:140px;background-color:white;">
+   <div style="width:100%;height:100%;position:relative;border:solid 1px #417D9A;">
+   <font style="position:absolute;top:10px;left:10px;">hbase.zookeeper.quorum</font>
+   <input style="position:absolute;top:7px;left:230px;width:310px;" type="text" id="quorum">
+   <font style="position:absolute;top:40px;left:10px;">hbase.zookeeper.property.clientPort</font>
+   <input style="position:absolute;top:37px;left:230px;width:310px;" type="text" id="port">
+    <font style="position:absolute;top:70px;left:10px;">zookeeper.znode.parent</font>
+   <input style="position:absolute;top:67px;left:230px;width:310px;" type="text" id="parent">
+   <button style="position:absolute;bottom:7px;left:10px; " onclick="save()">保存</button>
+  <button style="position:absolute;bottom:7px;left:330px; " onclick="closeconfigPanel()">关闭窗口</button>
+ </div>
+  </div>
+  
+    <div  id="delrowkeypanel"  >
+<div style="position:relative;width:100%;height:100%;border:solid 1px #417D9A">
+ <font style="position:absolute;top:15px;left:10px;">待删除RowKey</font><input id="delrowkey" style="position:absolute;top:10px;left:110px;width:320px;">
+  <button style="position:absolute;top:50px;left:90px;" onclick="delRow()">删除</button><button style="position:absolute;top:50px;left:260px;" onclick="$('#delrowkey').val('');$('#delrowkeypanel').hide()">关闭窗口</button>
+  </div>
+  </div>
+  
+      <div  id="addrowpanel"  >
+<div style="position:relative;width:100%;height:100%;border:solid 1px #417D9A">
+ <font style="position:absolute;top:15px;left:10px;">RowKey</font><input id="addrowkey" style="position:absolute;top:12px;left:110px;width:320px;">
+  <font style="position:absolute;top:45px;left:10px;">列簇</font>
+ 
+  <div style="position:absolute;top:42px;left:110px; width:320px;border:solid 1px #417D9A">
+  <select id="addcf" style=" color:#979797;font-family:微软雅黑;vertical-align:middle;width:323px; margin:-2px;">
+    
+  </select>
+</div>
+ 
+   <font style="position:absolute;top:75px;left:10px;">列名</font><input id="addcolumn" style="position:absolute;top:72px;left:110px;width:320px;">
+  <font style="position:absolute;top:105px;left:10px;">值</font><input id="addvalue" style="position:absolute;top:102px;left:110px;width:320px;">
+  
+  
+  <button style="position:absolute;top:140px;left:90px;" onclick="addRow()">新增</button><button style="position:absolute;top:140px;left:260px;" onclick="$('#addrowpanel input').val('');$('#addrowpanel').hide()">关闭窗口</button>
+  </div>
+  </div>
+  
+  
+    <div  id="countdiv"  >
+<div style="width:100%;height:100%;position:relative;border:solid 1px #417D9A">
+<font style="font-size:17px;"  style="position:absolute;top:10px;left:10px;"></font>
+<img src="img/close2.png" onclick="$('#countdiv').hide()" style="position:absolute;top:15px;right:10px;">
+</div>
+</div>
+  
+    <div  id="conditionwarp" style=" display:none;z-index:998;position:absolute;top:50px;left:280px;width:400px;height:190px;border:solid 1px #417D9A;background-color:white;">
+<div id="condition" style="height:150px; width:100%;">
+<table cellspacing=0 cellpadding=0 style="border-collapse:collapse;width:395px; ">
+<tr class="thclass">
+<td style="width:100px;">列簇</td><td style="width:100px;">列名</td><td style="width:50px;">关系</td><td>值</td>
+ 
+</tr>
+</table>
+  </div>
+ &nbsp; <button onclick="addCondition()" style="width:40px;">添加</button>  &nbsp;<button style="width:40px;" onclick="clearCondition()">清除</button> &nbsp;
+   <button style="width:40px;" onclick="getByCondition()">查询</button>    &nbsp;<button style="width:40px;" onclick="closeconditionwarp()">关闭</button> 
+ 
+  </div>
+  
+  
+  
+    <div class="right_mid2">
+ 查询
+  </div>
+  
+  
+    <div  id="trunc_confirm" style="width:270px;height:100px;background-color:white;position:absolute;top:66px;left:171px;display:none;">
+<div style="width:100%;height:100%;position:relative;border:solid 1px #417D9A">
+<img src="img/confirm.png" style="position:absolute;top:15px;left:15px;">
+<font style="position:absolute;top:20px;left:58px;font-size:15px;">确定要清空表吗？</font>
+<button onclick="truncTable()" style="position:absolute;top:62px;left:15px;">确定</button>
+<button onclick="closeTruncTable()" style="position:absolute;top:62px;left:140px;">放弃</button>
+</div>
+  </div>
+  
+    
+           <div  id="confirm" style="width:270px;height:100px;background-color:white;position:absolute;top:66px;left:91px;display:none;">
+<div style="width:100%;height:100%;position:relative;border:solid 1px #417D9A">
+<img src="img/confirm.png" style="position:absolute;top:15px;left:15px;">
+<font style="position:absolute;top:20px;left:58px;font-size:15px;">确定要删除吗？</font>
+<button onclick="deleteTable()" style="position:absolute;top:62px;left:15px;">确定</button>
+<button onclick="closedeleteTable()" style="position:absolute;top:62px;left:140px;">放弃</button>
+</div>
+  </div>
+         <div  id="confirm2" style="width:200px;height:65px;background-color:white;position:absolute;top:66px;left:91px;display:none;">
+<div style="width:100%;height:100%;position:relative;border:solid 1px #417D9A">
+<img src="img/confirm.png" style="position:absolute;top:15px;left:15px;">
+<font style="position:absolute;top:20px;left:58px;font-size:15px;">没有选择表！</font>
+ 
+</div>
+  </div>
+  
+       <div  id="trunc_confirm2" style="width:200px;height:65px;background-color:white;position:absolute;top:66px;left:171px;display:none;">
+<div style="width:100%;height:100%;position:relative;border:solid 1px #417D9A">
+<img src="img/confirm.png" style="position:absolute;top:15px;left:15px;">
+<font style="position:absolute;top:20px;left:58px;font-size:15px;">没有选择表！</font>
+ 
+</div>
+  </div>
+  
+      <div  id="confirm3" style="width:200px;height:65px;background-color:white;position:absolute;top:66px;left:91px;display:none;">
+<div style="width:100%;height:100%;position:relative;border:solid 1px #417D9A">
+<img src="img/ing.png" style="position:absolute;top:15px;left:15px;">
+<font style="position:absolute;top:20px;left:58px;font-size:15px;">努力删除中...</font>
+ 
+</div>
+  </div>
+  
+     <div  id="trunc_confirm3" style="width:200px;height:65px;background-color:white;position:absolute;top:66px;left:171px;display:none;">
+<div style="width:100%;height:100%;position:relative;border:solid 1px #417D9A">
+<img src="img/ing.png" style="position:absolute;top:15px;left:15px;">
+<font style="position:absolute;top:20px;left:58px;font-size:15px;">努力清空中...</font>
+ 
+</div>
+  </div>
+  
+      <div  id="confirm4" style="width:200px;height:65px;background-color:white;position:absolute;top:66px;left:91px;display:none;">
+<div style="width:100%;height:100%;position:relative;border:solid 1px #417D9A">
+<img src="img/success.png" style="position:absolute;top:15px;left:15px;">
+<font style="position:absolute;top:20px;left:58px;font-size:15px;">删除成功！</font>
+ 
+</div>
+  </div>
+      <div  id="successdelrow"  >
+<div style="width:100%;height:100%;position:relative;border:solid 1px #417D9A">
+<img src="img/success.png" style="position:absolute;top:15px;left:15px;">
+<font style="position:absolute;top:20px;left:58px;font-size:15px;">删除成功！</font>
+ 
+</div>
+  </div>
+    <div  id="successaddrow"  >
+<div style="width:100%;height:100%;position:relative;border:solid 1px #417D9A">
+<img src="img/success.png" style="position:absolute;top:15px;left:15px;">
+<font style="position:absolute;top:20px;left:58px;font-size:15px;">插入成功！</font>
+ 
+</div>
+  </div>
+     <div  id="successcopy"  >
+<div style="width:100%;height:100%;position:relative;border:solid 1px #417D9A">
+<img src="img/success.png" style="position:absolute;top:15px;left:15px;">
+<font style="position:absolute;top:20px;left:58px;font-size:15px;">已复制！</font>
+ 
+</div>
+  </div>
+      <div  id="trunc_confirm4" style="width:200px;height:65px;background-color:white;position:absolute;top:66px;left:171px;display:none;">
+<div style="width:100%;height:100%;position:relative;border:solid 1px #417D9A">
+<img src="img/success.png" style="position:absolute;top:15px;left:15px;">
+<font style="position:absolute;top:20px;left:58px;font-size:15px;">清空成功！</font>
+ 
+</div>
+  </div>
+  
+  <div id="createTabPanel" style="z-index:999;text-align:center;display:none;position:absolute;top:66px;left:10px;width:560px;height:250px;border:solid 1px #417D9A;background-color:white;">
+  <table style="width:530px;height:40px;  ">
+  <tr style="height:5px;">
+  <td > </td><td> </td>
+  </tr>
+  <tr>
+  <td style="width:40px;"><font>表名</font></td><td><input id="newTableName" type="text" style="width:150px;"></td>
+  </tr>
+   <tr>
+  <td style="width:40px;"><font>列簇</font></td><td></td>
+  </tr>
+  <table>
+   
+  <div id="cf" style=" padding:5px;width:530px;height:100px;border:solid 1px #417D9A ">  </div>
+  
+ <font style="padding-left:1px;padding-top:15px;width:40px;">SPLITS</font> <input type="text" id="splits" style="width:460px;">
+  <table style="width:530px;height:35px;  ">
+  <tr style="height:6px;">
+  <td > </td><td> </td>
+  </tr>
+  <tr>
+  <td ><button onclick="createTab()">创建</button></td> <td><button onclick="closecreateTabPanel()">关闭窗口</button></td>
+  </tr>
+  <table>
+  </div>
+ 
+ 
+  
+ 
+  <input type="hidden" id="forcopy" >
+</body>
+<script>
+
+cur_table=null;
+http_host="";  
+quorumz="";
+portz="";
+cmd=0;
+parentz="";
+
+  function save(){
+ 
+var t=fso.opentextfile("hclient.ini",2);
+ 
+ t.writeline("cmd="+cmd);
+ t.writeline("http_host="+http_host);
+ t.writeline("hbase.zookeeper.quorum="+$("#quorum").val());
+ t.writeline("hbase.zookeeper.property.clientPort="+$("#port").val());
+ t.writeline("zookeeper.znode.parent="+$("#parent").val());
+t.close();
+ http.open('POST', http_host+"/hbase/config", false); 
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');  
+   http.send("quorum="+$("#quorum").val()+"&port="+$("#port").val()+"&parent="+$("#parent").val());
+  if(http.status==200){ 
+  $(".leftlist").empty();
+  listTables("");
+   $("#configPanel").fadeOut(2000);
+  }
+  
+  
+ }
+ 
+  function hexToDec(str) {
+    str=str.replace(/\\/g,"%");
+    return unescape(str);
+}
+ 
+ function showRight(){
+if(!ctrl){
+$('#countdiv').hide();
+$("#addrowpanel input").val("");
+$("#addrowpanel").hide();
+closeconditionwarp();
+var tname=$(this).text();
+cur_table=$(this); 
+   http.open('POST', http_host+"/hbase/isEnabled", false); 
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');  
+   http.send("name="+tname);
+     if(http.status==200){      
+     if(http.responseText=="true")
+      $(".right_top").text(tname+"(enabled)");
+     else
+     $(".right_top").text(tname+"(disabled)");
+     
+     }
+
+ http.open('POST', http_host+"/hbase/cfinfo", false); 
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');  
+   http.send("name="+tname);
+     if(http.status==200){     
+     var json= eval("("+http.responseText+")"); 
+     var s="<tr class='thclass'><td >NAME</td>   <td>REPLICATION_SCOPE</td><td>VERSIONS</td><td>MIN_VERSIONS</td> <td>BLOCKSIZE</td><td>IN_MEMORY</td> </tr>";
+      for(var i=0;i<json.length;i++)
+      s+="<tr class='tdclass'><td >"+json[i].nameAsString+"</td><td>"+json[i].scope+"</td><td>"+json[i].maxVersions+"</td><td>"+json[i].minVersions+"</td> <td>"+json[i].blocksize+"</td><td>"+json[i].inMemory+"</td> </tr>";
+    $(".cfinfo>table").html(s);
+     }
+
+
+ http.open('POST', http_host+"/hbase/listTop", false); 
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');  
+   http.send("name="+tname);
+     if(http.status==200){     
+     var json= eval("("+http.responseText+")"); 
+     var s="";
+      for(var i=0;i<json.length;i++){
+    var subrowkey=json[i].rowkey;
+    if(subrowkey.length>30) subrowkey=subrowkey.substring(0,30)+"...";
+    var subcolumn=json[i].column;
+    if(subcolumn.length>11) subcolumn=subcolumn.substring(0,11)+"...";
+    var subfamily=json[i].family;
+    if(subfamily.length>11) subfamily=subfamily.substring(0,11)+"...";
+      s+="<tr class='tdclass'><td width=200 oncontextmenu='oCopy(this)' title="+json[i].rowkey+">"+subrowkey+"</td><td oncontextmenu='oCopy(this)' width=100 title="+json[i].family+">"+subfamily+"</td><td width=100 oncontextmenu='oCopy(this)' title="+json[i].column+">"+subcolumn+"</td><td width=100>"+json[i].timestamp+"</td> <td oncontextmenu='oCopy(this)' title="+json[i].value+">"+json[i].value+"</td></tr>";
+   
+   }
+     $(".contenti>table").html(s);
+    
+     }
+}
+}
+ 
+ 
+http = new ActiveXObject("Microsoft.XMLHTTP");
+fso=new ActiveXObject("scripting.filesystemobject");
+var f=fso.opentextfile("hclient.ini");
+  
+while (!f.AtEndOfStream)
+{
+var line=$.trim(f.readline());
+if(line.indexOf("#")!=0&&line!=""){
+ if(line.indexOf("http_host=")!=-1) http_host=line.replace("http_host=","");
+ if(line.indexOf("cmd=")!=-1) cmd=line.replace("cmd=","");
+ if(line.indexOf("zookeeper.znode.parent=")!=-1) parentz=line.replace("zookeeper.znode.parent=","");
+  if(line.indexOf("hbase.zookeeper.quorum=")!=-1)  quorumz=line.replace("hbase.zookeeper.quorum=","");
+  if(line.indexOf("hbase.zookeeper.property.clientPort=")!=-1)  portz=line.replace("hbase.zookeeper.property.clientPort=","");
+  
+ }
+} 
+ 
+f.close();
+$("#parent").val(parentz);
+if(quorumz!=""&&portz!=""){
+$("#quorum").val(quorumz);
+$("#port").val(portz);
+
+http.open('POST', http_host+"/hbase/config", false); 
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');  
+   http.send("quorum="+quorumz+"&port="+portz+"&parent="+parentz);
+  if(http.status==200){ 
+  listTables("");
+  }
+
+
+}
+
+
+function closeconfigPanel(){
+$("#quorum").val(quorumz);
+$("#port").val(portz);
+ $("#configPanel").hide();
+
+}
+  
+  
+ function showconditionwarp(){
+ if(cur_table==null) return ;
+ $("#conditionwarp").show();
+ }
+ 
+ function closeconditionwarp(){
+ $("#conditionwarp").hide();
+ clearCondition();
+ }
+ 
+ function clearCondition(){
+ $("#condition>table").html('<tr class="thclass"><td style="width:100px;">列簇</td><td style="width:100px;">列名</td><td style="width:50px;">关系</td><td>值</td></tr>');
+ 
+ }
+ 
+ function getByCondition(){
+ var s="";
+ var isfill=true;
+ $("#condition tr:gt(0)").each(function(){
+ var cf=$.trim($(this).children("td:eq(0)").children("select").val());
+ var column=$.trim($(this).children("td:eq(1)").children("input").val());
+ var cond=$.trim($(this).children("td:eq(2)").children("select").val());
+ var value=$.trim($(this).children("td:eq(3)").children("input").val());
+ 
+ if(cf==""||column==""||cond==""||value=="") isfill=false;
+ 
+  s+=cf+","+column+","+cond+","+value+";";
+ 
+ });
+ 
+ if(s=="") {
+ cur_table.click();
+ return ;
+ }
+ if(!isfill){
+ alert("请保证所填信息完整");
+ return ;
+ }
+ 
+ 
+ http.open('POST', http_host+"/hbase/getByCondition", false); 
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');  
+   http.send("name="+cur_table.text()+"&conds="+s.substring(0,s.length-1));
+   if(http.status==200) {
+   
+   var json= eval("("+http.responseText+")"); 
+     var s="";
+      for(var i=0;i<json.length;i++) {
+   var subrowkey=json[i].rowkey;
+    if(subrowkey.length>30) subrowkey=subrowkey.substring(0,30)+"...";
+    var subcolumn=json[i].column;
+    if(subcolumn.length>11) subcolumn=subcolumn.substring(0,11)+"...";
+    var subfamily=json[i].family;
+    if(subfamily.length>11) subfamily=subfamily.substring(0,11)+"...";
+    
+      s+="<tr class='tdclass'><td width=200 oncontextmenu='oCopy(this)' title="+json[i].rowkey+">"+subrowkey+"</td><td oncontextmenu='oCopy(this)' width=100 title="+json[i].family+">"+subfamily+"</td><td width=100 oncontextmenu='oCopy(this)' title="+json[i].column+">"+subcolumn+"</td><td width=100>"+json[i].timestamp+"</td> <td oncontextmenu='oCopy(this)' title="+json[i].value+">"+json[i].value+"</td></tr>";
+ 
+  
+    }
+     $(".contenti>table").html(s);
+   
+   }
+ 
+ }
+ 
+ 
+ function addCondition(){
+ var s="<select style='width:100%'>";
+ 
+ $(".cfinfo tr:gt(0)").each(function(){
+ 
+s+="<option value="+$(this).children("td:first").text()+">"+$(this).children("td:first").text()+"</option>";
+ });
+ s+="</select>";
+ $("#condition>table").append("<tr><td>"+s+"</td><td><input type=text style='width:100%;padding:0px;'></td><td><select style='width:100%;'><option value='='>=</option><option value='!='>!=</option><option value='>='>>=</option><option value='<='><=</option><option value='>'>></option><option value='<'><</option></select></td><td><input type=text style='width:100%;padding:0px;'></td></tr>");
+ 
+ 
+ }
+ 
+ 
+ function showaddrowpanel(){
+ if(cur_table==null) return ;
+ var s="";
+ 
+ $(".cfinfo tr:gt(0)").each(function(){
+ 
+s+="<option value="+$(this).children("td:first").text()+">"+$(this).children("td:first").text()+"</option>";
+ });
+ 
+ 
+ $("#addcf").html(s);
+ $("#addrowpanel").show();
+ }
+ 
+ function showdelrowkeypanel(){
+ if(cur_table==null) return ;
+ $("#delrowkeypanel").show();
+ }
+
+$(".leftlist,.cfinfo,.contenti,#cf,#condition").niceScroll({cursorcolor:"#417D9A"});
+
+function addRow(){
+var row=$.trim($("#addrowkey").val());
+var cf=$.trim($("#addcf").val());
+var column=$.trim($("#addcolumn").val());
+var value=$.trim($("#addvalue").val());
+if(row==""||cf==""||column==""||value=="") return ;
+http.open('POST', http_host+"/hbase/addRow", false); 
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');  
+   http.send("tableName="+cur_table.text()+"&rowKey="+row+"&family="+cf+"&qualifier="+column+"&value="+value);
+   if(http.status==200) {
+   $("#addrowpanel input").val("");
+    $("#addrowpanel").hide();
+    $("#successaddrow").show();
+    cur_table.click();
+    setTimeout(function(){
+    $("#successaddrow").hide();
+    },2000);
+   }else{
+   alert("插入失败!");
+   }
+
+
+}
+
+
+function delRow(){
+var row=$.trim($("#delrowkey").val());
+if(row=="") return ;
+http.open('POST', http_host+"/hbase/delRow", false); 
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');  
+   http.send("tableName="+cur_table.text()+"&rowKey="+row);
+   if(http.status==200) {
+    $("#delrowkeypanel input").val("");
+    $("#delrowkeypanel").hide();
+    $("#successdelrow").show();
+    cur_table.click();
+    setTimeout(function(){
+    $("#successdelrow").hide();
+    },2000);
+   }else{
+   alert("删除失败!");
+   }
+}
+
+ 
+ $("#rowkey").keydown(function(e){
+ if(e.keyCode==13)
+ getByRowKey();
+ });
+ 
+
+   setInterval(function(){
+   if(cur_table==null) return ;
+   http.open('POST', http_host+"/hbase/getRowCount", false); 
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');  
+   http.send();
+    if(http.status==200) {   
+    $("#countdiv font").text("共"+http.responseText+"条记录"); 
+  
+    
+   }
+ 
+ },150);
+ 
+ function countRows(){ 
+ 
+ if(cur_table==null) return ;
+ $("#countdiv").show();
+   http.open('POST', http_host+"/hbase/rowCount", false); 
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');  
+   http.send("name="+cur_table.text());
+    
+ 
+ 
+ }
+ 
+ 
+ function getByRowKey(){
+ if(cur_table==null) return ;
+ 
+ var r=$.trim($("#rowkey").val());
+ if(r!=""){
+ http.open('POST', http_host+"/hbase/getByRowKey", false); 
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');  
+   http.send("name="+cur_table.text()+"&rowKey="+r);
+     if(http.status==200){     
+     var json= eval("("+http.responseText+")"); 
+     var s="";
+      for(var i=0;i<json.length;i++) {
+     var subrowkey=json[i].rowkey;
+    if(subrowkey.length>30) subrowkey=subrowkey.substring(0,30)+"...";
+    var subcolumn=json[i].column;
+    if(subcolumn.length>11) subcolumn=subcolumn.substring(0,11)+"...";
+    var subfamily=json[i].family;
+    if(subfamily.length>11) subfamily=subfamily.substring(0,11)+"...";
+    
+      s+="<tr class='tdclass'><td width=200 oncontextmenu='oCopy(this)' title="+json[i].rowkey+">"+subrowkey+"</td><td oncontextmenu='oCopy(this)' width=100 title="+json[i].family+">"+subfamily+"</td><td width=100 oncontextmenu='oCopy(this)' title="+json[i].column+">"+subcolumn+"</td><td width=100>"+json[i].timestamp+"</td> <td oncontextmenu='oCopy(this)' title="+json[i].value+">"+json[i].value+"</td></tr>";
+  }
+  $(".contenti>table").html(s);
+     }
+  
+ }else{
+ cur_table.click();
+ 
+ }
+ 
+ }
+ 
+ 
+
+function oCopy(target){
+$("#forcopy").val(target.title);
+ $("#forcopy")[0].select();
+ js= $("#forcopy")[0].createTextRange();
+ js.execCommand("Copy")
+  $("#successcopy").css("left",event.clientX);
+  $("#successcopy").css("top",event.clientY);
+  $("#successcopy").fadeIn();
+  setTimeout(function(){
+  $("#successcopy").fadeOut();
+  },2400);
+  
+  }
+
+function closedeleteTable(){
+$(".tablelist.clickedList").removeClass("clickedList");
+$("#confirm").hide();
+
+}
+
+function closeTruncTable(){
+$(".tablelist.clickedList").removeClass("clickedList");
+$("#trunc_confirm").hide();
+
+}
+
+function showTruncTable(){
+ var clicked=$(".tablelist.clickedList");
+if(clicked.length>0)
+$("#trunc_confirm").show();
+else{
+$("#trunc_confirm2").show();
+setTimeout(function(){
+$("#trunc_confirm2").hide();
+},1500);
+}
+
+}
+
+function showdeleteTable(){
+ var clicked=$(".tablelist.clickedList");
+if(clicked.length>0)
+$("#confirm").show();
+else{
+$("#confirm2").show();
+setTimeout(function(){
+$("#confirm2").hide();
+},1500);
+}
+
+}
+function appendCF(v){
+
+ var s='<div style="height:30px; "><font style="padding-left:1px;padding-top:5px;width:44px;">NAME</font><input type="text" style="width:150px;"> <font style="padding-left:1px;padding-top:5px;width:74px;">REPLICATION_SCOPE</font> <input type="text" value=0 style="width:150px;">  <img onclick="appendCF($(this))" src="img/addTable.png"  ></div>';
+v.parent().parent().append(s);
+  v.after('<img onclick="$(this).parent().remove()" src="img/close2.png"  >');
+  v.remove();
+}
+
+
+function closecreateTabPanel(){
+var s='<div style="height:30px; "><font style="padding-left:1px;padding-top:5px;width:44px;">NAME</font><input type="text" style="width:150px;"> <font style="padding-left:1px;padding-top:5px;width:74px;">REPLICATION_SCOPE</font> <input type="text" value=0 style="width:150px;">  <img onclick="appendCF($(this))" src="img/addTable.png"  ></div>';
+$("#cf").html(s);
+$("#newTableName").val("");
+$("#createTabPanel").hide();
+}
+
+closecreateTabPanel();
+
+function showcreateTabPanel(){
+
+$("#createTabPanel").show();
+}
+ 
+  
+ 
+ $("#tablename").keydown(function(e){
+ e.stopPropagation();
+ if(e.keyCode==13){
+ listTables($.trim($(this).val()));
+ }
+ 
+ });
+ 
+ 
+  function deleteTable(){
+ var arr=new Array();
+ var clicked=$(".tablelist.clickedList");
+ for(var i=0;i<clicked.length;i++)  arr.push(clicked.get(i).innerText);
+  $("#confirm").hide();
+ $("#confirm3").show();
+  
+  setTimeout(function(){
+  http.open('POST', http_host+"/hbase/deleteTables", false); 
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');  
+   http.send("names="+arr);
+
+  
+  if(http.status==200){ 
+ listTables("");
+ cur_table=null;
+ $("#confirm3").hide();
+ $("#confirm4").show();
+ setTimeout(function(){
+$("#confirm4").hide();
+},2000);
+ }
+ },500);
+ 
+ }
+ 
+ 
+ 
+ function truncTable(){
+ var arr=new Array();
+ var clicked=$(".tablelist.clickedList");
+ for(var i=0;i<clicked.length;i++)  arr.push(clicked.get(i).innerText);
+  $("#trunc_confirm").hide();
+ $("#trunc_confirm3").show();
+  
+  setTimeout(function(){
+  http.open('POST', http_host+"/hbase/truncTables", false); 
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');  
+   http.send("names="+arr);
+  if(http.status==200){ 
+ $("#trunc_confirm3").hide();
+ $("#trunc_confirm4").show();
+ setTimeout(function(){
+$("#trunc_confirm4").hide();
+},2000);
+ }
+ },500);
+ 
+ }
+ 
+ 
+ function createTab(){
+ var name=$.trim($("#newTableName").val());
+ if(name=="") {
+ alert("请填写表名");
+ return ;}
+ 
+ var s="";
+ var y=true;
+ $("#cf>div>input").each(function(){
+ var tmp=$.trim($(this).val());
+ if(tmp=="") y==false;  
+ s+=tmp;
+ 
+ if($(this).index()==1) s+=","; else s+=";";
+ });
+ 
+ s=s.substring(0,s.length-1);
+ var v=true;
+ var split=$.trim($("#splits").val());
+ 
+ if(split!=""){
+ var arr=split.split(",");
+ for(var i=0;i<arr.length;i++) if(arr[i]=="") v=false;
+ }
+ 
+ if(!v){
+ alert("SPLITS请用 , 分隔 并且不能有空值");
+ return ;
+ }
+  if(!y){
+ alert("NAME和SCOPE不能为空");
+ return ;
+ }
+ 
+ http.open('POST', http_host+"/hbase/createTable", false); 
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');  
+   http.send("name="+name+"&split="+split+"&familys="+s);
+  if(http.status==200){ 
+ if(http.responseText==0){
+ closecreateTabPanel();
+ listTables("");
+ }
+  }
+ 
+ 
+ }
+ 
+ 
+ 
+ function listTables(name){
+ http.open('POST', http_host+"/hbase/listTables", false); 
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');  
+   http.send("name="+name);
+     if(http.status==200){      
+     var json= eval("("+http.responseText+")"); 
+     var html="";
+     for(var i in json){
+     html+="<div class='tablelist'>"+json[i]+"</div>";
+     }
+     $(".leftlist").html(html);
+     $("#countTable").text(json.length);
+     }
+     
+   
+     
+$(".tablelist").mouseover(function(){
+$(this).addClass("selectedList");
+});
+$(".tablelist").mouseout(function(){
+$(this).removeClass("selectedList");
+
+});
+
+  $(".tablelist").click(showRight);
+
+$(".tablelist").mousedown(function(e){
+e.stopPropagation();
+if(!ctrl)
+$(".tablelist").removeClass("clickedList");
+$(this).addClass("clickedList");
+});
+     
+}
+
+
+ 
+$("#close").click(function(){
+ window.opener=null;
+ window.open("","_self");
+ window.close();
+ 
+});
+
+$(".tablelist").click(showRight);
+
+
+
+
+$(".tablelist").mousedown(function(e){
+e.stopPropagation();
+if(!ctrl)
+$(".tablelist").removeClass("clickedList");
+$(this).addClass("clickedList");
+});
+$(".tablelist").mouseover(function(){
+$(this).addClass("selectedList");
+});
+$(".tablelist").mouseout(function(){
+$(this).removeClass("selectedList");
+});
+ 
+
+ 
+ 
+$("#maxize").click(function(){
+var s=$(this).attr("src");
+if(s.indexOf("max")>0){
+s=s.replace("max","re");
+$(".leftlist").height($(document).height()+15);
+ $(".contenti").height($(document).height()-300);
+$(".cfinfo,.content,.contenti").width($(document).width()+70);
+}
+else{
+s=s.replace("re","max");
+$(".leftlist").height("450");
+$(".cfinfo,.content,.contenti").width("710");
+$(".contenti").height("270");
+}
+$(this).attr("src",s)
+});
+
+ 
+  
+
+$("#minize").click(function(){
+min.Click();
+});
+$("#maxize").click(function(){
+max.Click();
+});
+ $("#top_banner").mousedown(function(e){
+ isMouseDown=true;
+ cx=e.clientX;
+ cy=e.clientY;
+ });
+ 
+ 
+ $(".leftlist").keyup(function(e){
+  e.stopPropagation();
+ if(e.keyCode==17) 
+ ctrl=false;
+ });
+ $(".leftlist").keydown(function(e){
+  e.stopPropagation();
+ 
+ if(e.keyCode==17)  
+ ctrl=true;
+ 
+ });
+ 
+ $(document).mouseup(function(e){
+ isMouseDown=false;
+ });
+ 
+ 
+ $(document).mousemove(function(e){
+ if(isMouseDown){
+ var dx=e.clientX-cx;
+ var dy=e.clientY-cy;
+  moveTo(windowx+dx,windowy+dy);
+ windowx=windowx+dx;
+ windowy=windowy+dy;
+ }
+ });
+
+ 
+
+</script>
+<html>
